@@ -1,0 +1,30 @@
+<fieldset>
+    <legend>Upload a corpus in the following format: .txt .segmented .parsed .conll (0.89 sents/sec)</legend>
+    <form action=/ method=POST enctype=multipart/form-data>
+    {% csrf_token %}
+    {{ upload_form }}<br>
+    <input type=submit />
+    </form>
+</fieldset>
+
+<fieldset>
+    <legend>Parse a segmented corpus</legend>
+    <form action=/parse method=POST>
+    {% for segmented_corpus in segmented_corpora %}
+    <input type=radio name=radio value={{parsed_corpus}} /><a href=static/{{segmented_corpus}}>{{segmented_corpus}}</a><br>
+    {% endfor %}
+    </form>
+</fieldset>
+
+<fieldset>
+    <legend>Query collocation from a parsed corpus</legend>
+    <form action=/query method=POST>
+      {% csrf_token %}
+      Word: <input name=word /><br>
+      corpus:<br>
+      {% for parsed_corpus in parsed_corpora %}
+      <input type=radio name=radio value={{parsed_corpus}} /><a href=static/{{parsed_corpus}}>{{parsed_corpus}}</a><br>
+      {% endfor %}
+      <input type=submit />
+    </form>
+</fieldset>
