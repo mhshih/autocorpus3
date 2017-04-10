@@ -1,29 +1,40 @@
 <fieldset>
-    <legend>Upload a corpus in the following format: .txt .segmented .parsed .conll (0.89 sents/sec)</legend>
-    <form action=/ method=POST enctype=multipart/form-data>
-    {% csrf_token %}
-    {{ upload_form }}<br>
-    <input type=submit />
+    <legend>Upload a corpus in the following format: .txt .segmented .parsed .conll (4.90 sents/sec)</legend>
+    <form action=/upload method=POST enctype=multipart/form-data>
+        {% csrf_token %}
+        {{ upload_form }}<br>
+        <input type=submit />
     </form>
 </fieldset>
 
 <fieldset>
-    <legend>Parse a segmented corpus</legend>
-    <form action=/parse method=POST>
-    {% for segmented_corpus in segmented_corpora %}
-    <input type=radio name=radio value={{parsed_corpus}} /><a href=static/{{segmented_corpus}}>{{segmented_corpus}}</a><br>
-    {% endfor %}
+    <legend>Stanford segmenter for a raw corpus</legend>
+    <form action=/segmenter>
+        {% for raw_corpus in raw_corpora %}
+        <input type=radio name=raw_corpus value={{raw_corpus}} /><a href=static/{{raw_corpus}}>{{raw_corpus}}</a><br>
+        {% endfor %}
+        <input type=submit />
+    </form>
+</fieldset>
+
+<fieldset>
+    <legend>Stanford parser for a segmented corpus</legend>
+    <form action=/parser>
+        {% for segmented_corpus in segmented_corpora %}
+        <input type=radio name=segmented_corpus value={{segmented_corpus}} /><a href=static/{{segmented_corpus}}>{{segmented_corpus}}</a><br>
+        {% endfor %}
+        <input type=submit />
     </form>
 </fieldset>
 
 <fieldset>
     <legend>Query collocation from a parsed corpus</legend>
-    <form action=/query method=POST>
+    <form action=/query>
       {% csrf_token %}
       Word: <input name=word /><br>
-      corpus:<br>
+      Corpus:<br>
       {% for parsed_corpus in parsed_corpora %}
-      <input type=radio name=radio value={{parsed_corpus}} /><a href=static/{{parsed_corpus}}>{{parsed_corpus}}</a><br>
+      <input type=radio name=parsed_corpus value={{parsed_corpus}} /><a href=static/{{parsed_corpus}}>{{parsed_corpus}}</a><br>
       {% endfor %}
       <input type=submit />
     </form>

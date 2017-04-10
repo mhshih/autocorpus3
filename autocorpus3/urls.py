@@ -17,6 +17,9 @@ from django.conf.urls import url
 from autocorpus3 import views
 
 urlpatterns = [
+    url('upload',views.upload),
+    url('segmenter',views.segmenter),
+    url('parser',views.parser),
     url('query',views.query),
     url('',views.home)
 ]
