@@ -2,14 +2,22 @@ from django import forms
 class UploadFileForm(forms.Form):
     file=forms.FileField()
 
+static_path='autocorpus3/static/'
+class Corpus:
+    def __init__(self,fn):
+        f=open(static_path+fn).read()
+        self.filename=fn
+        self.words=len(f.split())
+        self.sentences=len(f.split('\n'))
+
 from os import listdir
 from django.shortcuts import render
 def home(request):      #Form action=/
-    raw_corpora=[f for f in listdir('autocorpus3/static') if f.endswith('txt')]
-    segmented_corpora=[f for f in listdir('autocorpus3/static') if f.endswith('segmented')]
-    parsed_corpora=[f for f in listdir('autocorpus3/static') if f.endswith('parsed')]
-    conll_corpora=[f for f in listdir('autocorpus3/static') if f.endswith('conll')]
-    return render(request,'template.htm',{'raw_corpora':raw_corpora,'segmented_corpora':segmented_corpora,'parsed_corpora':parsed_corpora,'conll_corpora':conll_corpora,'upload_form':UploadFileForm()})
+    raw_corpora=[Corpus(fn) for fn in listdir(static_path) if fn.endswith('txt')]
+    segmented_corpora=[Corpus(fn) for fn in listdir(static_path) if fn.endswith('segmented')]
+    parsed_corpora=[Corpus(fn) for fn in listdir(static_path) if fn.endswith('parsed')]
+    SE7_corpora=[Corpus(fn) for fn in listdir(static_path) if fn.find('xml')>-1]
+    return render(request,'template.htm',{'raw_corpora':raw_corpora,'segmented_corpora':segmented_corpora,'parsed_corpora':parsed_corpora,'SE7_corpora':SE7_corpora,'upload_form':UploadFileForm()})
 
 from django.shortcuts import redirect
 def upload(request):    #Form action=/upload
@@ -33,11 +41,11 @@ def parser(request):     #Form action=/parser
     return redirect('/')
 
 from parse import read_parse
-from django.http import HttpResponse
-from django.shortcuts import render
-def query(request):     #Form action=/query
+def grammatical_collocation(request):     #Form action=/grammatical_collocation
     dependent=request.GET['word']#.encode('utf8') for python2
     parsed_corpus=request.GET['parsed_corpus']
     DRH=read_parse(parsed_corpus)
     return render(request,'collocation.htm',{'word':dependent,'RH':DRH[dependent]})
 
+def sense_collocation(request):
+    pass

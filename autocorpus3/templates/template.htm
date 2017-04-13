@@ -1,5 +1,5 @@
 <fieldset>
-    <legend>Upload a corpus in the following format: .txt .segmented .parsed .conll (4.90 sents/sec)</legend>
+    <legend>Text Upload (in the following format: .txt .segmented .parsed .xml)</legend>
     <form action=/upload method=POST enctype=multipart/form-data>
         {% csrf_token %}
         {{ upload_form }}<br>
@@ -8,34 +8,42 @@
 </fieldset>
 
 <fieldset>
-    <legend>Stanford segmenter for a raw corpus</legend>
+    <legend>Segmentation (Stanford segmenter for a raw text)</legend>
     <form action=/segmenter>
         {% for raw_corpus in raw_corpora %}
-        <input type=radio name=raw_corpus value={{raw_corpus}} /><a href=static/{{raw_corpus}}>{{raw_corpus}}</a><br>
+        <input type=radio name=raw_corpus value={{raw_corpus.filename}} /><a href=static/{{raw_corpus.filename}}>{{raw_corpus.filename}}</a> ({{raw_corpus.words}} words, {{raw_corpus.sentences}} sentences)<br>
         {% endfor %}
         <input type=submit />
     </form>
 </fieldset>
 
 <fieldset>
-    <legend>Stanford parser for a segmented corpus</legend>
+    <legend>Parsing (Stanford parser for a segmented text)</legend>
     <form action=/parser>
         {% for segmented_corpus in segmented_corpora %}
-        <input type=radio name=segmented_corpus value={{segmented_corpus}} /><a href=static/{{segmented_corpus}}>{{segmented_corpus}}</a><br>
+        <input type=radio name=segmented_corpus value={{segmented_corpus.filename}} /><a href=static/{{segmented_corpus.filename}}>{{segmented_corpus.filename}}</a><br>
         {% endfor %}
         <input type=submit />
     </form>
 </fieldset>
 
 <fieldset>
-    <legend>Query collocation from a parsed corpus</legend>
-    <form action=/query>
-      {% csrf_token %}
+    <legend>Query grammatical collocation from a parsed corpus</legend>
+    <form action=/grammatical_collocation>
       Word: <input name=word /><br>
       Corpus:<br>
       {% for parsed_corpus in parsed_corpora %}
-      <input type=radio name=parsed_corpus value={{parsed_corpus}} /><a href=static/{{parsed_corpus}}>{{parsed_corpus}}</a><br>
+      <input type=radio name=parsed_corpus value={{parsed_corpus.filename}} /><a href=static/{{parsed_corpus.filename}}>{{parsed_corpus.filename}}</a><br>
       {% endfor %}
       <input type=submit />
+    </form>
+</fieldset>
+
+<fieldset>
+    <legend>Query sense collocaion from SemEval-2007 lexical sample</legend>
+    <form action=/sense_collocation>
+        {% for SE7_corpus in SE7_corpora %}
+        <input type=radio name=SE7_corpus value={{SE7_corpus.filename}} /><a href=static/{{SE7_corpus.filename}}>{{SE7_corpus.filename}}</a> ({{SE7_corpus.words}} words, {{SE7_corpus.sentences}} sentences)<br>
+        {% endfor %}
     </form>
 </fieldset>
