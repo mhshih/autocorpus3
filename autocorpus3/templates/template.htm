@@ -1,5 +1,5 @@
 <fieldset>
-    <legend>Text Upload (in the following format: .txt .segmented .parsed .xml)</legend>
+    <legend>File Upload (in the following format: .txt .segmented .conll)</legend>
     <form action=/upload method=POST enctype=multipart/form-data>
         {% csrf_token %}
         {{ upload_form }}<br>
@@ -21,14 +21,14 @@
     <legend>Parsing (Stanford parser for a segmented text)</legend>
     <form action=/parser>
         {% for segmented_corpus in segmented_corpora %}
-        <input type=radio name=segmented_corpus value={{segmented_corpus.filename}} /><a href=static/{{segmented_corpus.filename}}>{{segmented_corpus.filename}}</a><br>
+        <input type=radio name=segmented_corpus value={{segmented_corpus.filename}} /><a href=static/{{segmented_corpus.filename}}>{{segmented_corpus.filename}}</a> ({{segmented_corpus.words}} words, {{segmented_corpus.sentences}} sentences)<br>
         {% endfor %}
         <input type=submit />
     </form>
 </fieldset>
 
 <fieldset>
-    <legend>Query grammatical collocation from a parsed corpus</legend>
+    <legend>Query grammatical collocation (from a parsed corpus in conll format)</legend>
     <form action=/grammatical_collocation>
       Word: <input name=word /><br>
       Corpus:<br>
@@ -43,7 +43,7 @@
     <legend>Query sense collocaion from SemEval-2007 lexical sample</legend>
     <form action=/sense_collocation>
         {% for SE7_corpus in SE7_corpora %}
-        <input type=radio name=SE7_corpus value={{SE7_corpus.filename}} /><a href=static/{{SE7_corpus.filename}}>{{SE7_corpus.filename}}</a> ({{SE7_corpus.words}} words, {{SE7_corpus.sentences}} sentences)<br>
+        <input type=radio name=SE7_corpus value={{SE7_corpus.filename}} /><a href=static/{{SE7_corpus.filename}}>{{SE7_corpus.filename}}</a><br>
         {% endfor %}
     </form>
 </fieldset>

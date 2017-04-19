@@ -8,15 +8,15 @@ class Corpus:
         f=open(static_path+fn).read()
         self.filename=fn
         self.words=len(f.split())
-        self.sentences=len(f.split('\n'))
+        self.sentences=len(f.strip().split('\n'))
 
 from os import listdir
 from django.shortcuts import render
 def home(request):      #Form action=/
     raw_corpora=[Corpus(fn) for fn in listdir(static_path) if fn.endswith('txt')]
     segmented_corpora=[Corpus(fn) for fn in listdir(static_path) if fn.endswith('segmented')]
-    parsed_corpora=[Corpus(fn) for fn in listdir(static_path) if fn.endswith('parsed')]
-    SE7_corpora=[Corpus(fn) for fn in listdir(static_path) if fn.find('xml')>-1]
+    parsed_corpora=[Corpus(fn) for fn in listdir(static_path) if fn.endswith('conllu')]
+    SE7_corpora=[Corpus(fn) for fn in listdir(static_path) if fn.endswith('xml.utf8.segmented.parsed')]
     return render(request,'template.htm',{'raw_corpora':raw_corpora,'segmented_corpora':segmented_corpora,'parsed_corpora':parsed_corpora,'SE7_corpora':SE7_corpora,'upload_form':UploadFileForm()})
 
 from django.shortcuts import redirect
@@ -34,18 +34,26 @@ def segmenter(request):
     system(command)
     return redirect('/')
 
-from parse import parse
+from conllx import parse
 def parser(request):     #Form action=/parser
-    segmented_corpus=request.GET['segmented_corpus']
-    parse(filename=segmented_corpus)
+    parse(segmented_file=request.GET['segmented_corpus'])
     return redirect('/')
 
-from parse import read_parse
+from conllx import DCR,triples_to_HRD_dict,triples_to_DRH_dict
+#from collections import defaultdict
 def grammatical_collocation(request):     #Form action=/grammatical_collocation
-    dependent=request.GET['word']#.encode('utf8') for python2
-    parsed_corpus=request.GET['parsed_corpus']
-    DRH=read_parse(parsed_corpus)
-    return render(request,'collocation.htm',{'word':dependent,'RH':DRH[dependent]})
+    word=request.GET['word']#.encode('utf8') for python2
+    corpus_file=request.GET['parsed_corpus']
+#   triples=read_conllx_triples('/tmp/autocorpus3/autocorpus3/static/'+corpus_file)
+    DRH=dict();HRD=dict()
+    dcr=DCR(root='/tmp/autocorpus3/autocorpus3/static',fileids=[corpus_file])
+    for parsed_sent in dcr.parsed_sents():
+        triples=parsed_sent.triples()
+        HRD=triples_to_HRD_dict(triples,HRD)
+        DRH=triples_to_DRH_dict(triples,DRH)
+    if word not in DRH:DRH[word]={'rel':'head'}
+    if word not in HRD:HRD[word]={'rel':'dependent'}
+    return render(request,'collocation.htm',{'word':word,'RH':DRH[word],'RD':HRD[word]})
 
 def sense_collocation(request):
     pass
