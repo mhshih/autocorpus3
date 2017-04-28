@@ -10,14 +10,17 @@ class Corpus:
         self.words=len(f.split())
         self.sentences=len(f.strip().split('\n'))
 
+from conllx import DCR  # DependencyCorpusReader
+from senseval import SensevalCorpusReader
+
 from os import listdir
 from django.shortcuts import render
 def home(request):      #Form action=/
-    raw_corpora=[Corpus(fn) for fn in listdir(static_path) if fn.endswith('txt')]
-    segmented_corpora=[Corpus(fn) for fn in listdir(static_path) if fn.endswith('segmented')]
-    parsed_corpora=[Corpus(fn) for fn in listdir(static_path) if fn.endswith('conllu')]
-    SE7_corpora=[Corpus(fn) for fn in listdir(static_path) if fn.endswith('xml.utf8.segmented.parsed')]
-    return render(request,'template.htm',{'raw_corpora':raw_corpora,'segmented_corpora':segmented_corpora,'parsed_corpora':parsed_corpora,'SE7_corpora':SE7_corpora,'upload_form':UploadFileForm()})
+    raw_corpora=[Corpus(fn) for fn in sorted(listdir(static_path)) if fn.endswith('txt')]
+    segmented_corpora=[Corpus(fn) for fn in sorted(listdir(static_path)) if fn.endswith('segmented')]
+    parsed_corpora=[DCR(root=static_path,fileids=[fn]) for fn in sorted(listdir(static_path)) if fn.endswith('conllu')]
+    SensevalCorpora=[SensevalCorpusReader(root=static_path,fileids=fn) for fn in sorted(listdir(static_path)) if fn.endswith('xml.utf8')]
+    return render(request,'template.htm',{'raw_corpora':raw_corpora,'segmented_corpora':segmented_corpora,'parsed_corpora':parsed_corpora,'SensevalCorpora':SensevalCorpora,'upload_form':UploadFileForm()})
 
 from django.shortcuts import redirect
 def upload(request):    #Form action=/upload

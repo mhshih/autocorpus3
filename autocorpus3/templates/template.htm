@@ -1,5 +1,7 @@
+<h3>Chinese Online Corpus Building and Processing Pipeline Framework</h3>
+
 <fieldset>
-    <legend>File Upload (in the following format: .txt .segmented .conll)</legend>
+    <legend>Upload a Chinese File (in the following format: .txt .segmented .conllu .xml.utf8)</legend>
     <form action=/upload method=POST enctype=multipart/form-data>
         {% csrf_token %}
         {{ upload_form }}<br>
@@ -8,17 +10,17 @@
 </fieldset>
 
 <fieldset>
-    <legend>Segmentation (Stanford segmenter for a raw text)</legend>
+    <legend>Segmentation (Select a raw text for <a href=http://nlp.stanford.edu/software/segmenter.html>Stanford Segmenter)</a></legend>
     <form action=/segmenter>
         {% for raw_corpus in raw_corpora %}
-        <input type=radio name=raw_corpus value={{raw_corpus.filename}} /><a href=static/{{raw_corpus.filename}}>{{raw_corpus.filename}}</a> ({{raw_corpus.words}} words, {{raw_corpus.sentences}} sentences)<br>
+        <input type=radio name=raw_corpus value={{raw_corpus.filename}} /><a href=static/{{raw_corpus.filename}}>{{raw_corpus.filename}}</a> ({{raw_corpus.sentences}} sentences)<br>
         {% endfor %}
         <input type=submit />
     </form>
 </fieldset>
 
 <fieldset>
-    <legend>Parsing (Stanford parser for a segmented text)</legend>
+    <legend>Tagging (Select a segmented text for <a href=http://nlp.stanford.edu/software>Stanford CoreNLP</a>)</legend>
     <form action=/parser>
         {% for segmented_corpus in segmented_corpora %}
         <input type=radio name=segmented_corpus value={{segmented_corpus.filename}} /><a href=static/{{segmented_corpus.filename}}>{{segmented_corpus.filename}}</a> ({{segmented_corpus.words}} words, {{segmented_corpus.sentences}} sentences)<br>
@@ -28,22 +30,23 @@
 </fieldset>
 
 <fieldset>
-    <legend>Query grammatical collocation (from a parsed corpus in conll format)</legend>
+    <legend>Query grammatical collocation (Select a parsed corpus in <a href=http://universaldependencies.org/format.html>CoNLL-U</a> format)</legend>
     <form action=/grammatical_collocation>
       Word: <input name=word /><br>
       Corpus:<br>
-      {% for parsed_corpus in parsed_corpora %}
-      <input type=radio name=parsed_corpus value={{parsed_corpus.filename}} /><a href=static/{{parsed_corpus.filename}}>{{parsed_corpus.filename}}</a><br>
+      {% for DCR in parsed_corpora %}
+      <input type=radio name=parsed_corpus value={{DCR.fileids.0}} /><a href=static/{{DCR.fileids.0}}>{{DCR.fileids.0}}</a> ({{DCR.words|length}} words, {{DCR.sents|length}} sentences)<br>
       {% endfor %}
       <input type=submit />
     </form>
 </fieldset>
 
 <fieldset>
-    <legend>Query sense collocaion from SemEval-2007 lexical sample</legend>
+    <legend>Query sense collocaion from <a href=http://nlp.cs.swarthmore.edu/semeval>SemEval-2007</a> Chinese lexical sample</legend>
     <form action=/sense_collocation>
-        {% for SE7_corpus in SE7_corpora %}
-        <input type=radio name=SE7_corpus value={{SE7_corpus.filename}} /><a href=static/{{SE7_corpus.filename}}>{{SE7_corpus.filename}}</a><br>
+        {% for SensevalCorpusReader in SensevalCorpora %}
+        <input type=radio name=SensevalCorpus value={{SensevalCorpusReader.fileids.0}} /><a href=static/{{SensevalCorpusReader.fileids.0}}>{{SensevalCorpusReader.fileids.0}}</a> ({{SensevalCorpusReader.instances|length}} instances)<br>
         {% endfor %}
+        <input type=submit />
     </form>
 </fieldset>
