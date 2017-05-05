@@ -30,7 +30,7 @@
 </fieldset>
 
 <fieldset>
-    <legend>Query grammatical collocation (Select a parsed corpus in <a href=http://universaldependencies.org/format.html>CoNLL-U</a> format)</legend>
+    <legend>Query Grammatical Collocation (Select a tagged corpus in <a href=http://universaldependencies.org/format.html>CoNLL-U</a> format)</legend>
     <form action=/grammatical_collocation>
       Word: <input name=word /><br>
       Corpus:<br>
@@ -42,7 +42,7 @@
 </fieldset>
 
 <fieldset>
-    <legend>Query sense collocaion from <a href=http://nlp.cs.swarthmore.edu/semeval>SemEval-2007</a> Chinese lexical sample</legend>
+    <legend>Query Sense Collocaion (from <a href=http://nlp.cs.swarthmore.edu/semeval>SemEval-2007</a> Chinese lexical sample)</legend>
     <form action=/sense_collocation>
         {% for SensevalCorpusReader in SensevalCorpora %}
         <input type=radio name=SensevalCorpus value={{SensevalCorpusReader.fileids.0}} /><a href=static/{{SensevalCorpusReader.fileids.0}}>{{SensevalCorpusReader.fileids.0}}</a> ({{SensevalCorpusReader.instances|length}} instances)<br>
