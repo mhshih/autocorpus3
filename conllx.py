@@ -1,3 +1,5 @@
+#-*-coding:utf8-*-
+
 from nltk.corpus.reader.util import concat
 from nltk.corpus.reader import DependencyCorpusView
 from nltk.parse import DependencyGraph

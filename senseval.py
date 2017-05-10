@@ -1,3 +1,5 @@
+#-*-coding:utf8-*-
+
 #nltk 3.2.1
 # Natural Language Toolkit: Senseval 2 Corpus Reader
 #
@@ -150,5 +152,5 @@ if __name__=='__main__':
     for instance in SensevalCorpusReader(root='.',fileids=[argv[1]]).instances():#'/tmp/Chinese_train_pos.xml.utf8.Chinese_medicine']).instances():
         words=[w.strip() for w,tag in instance.context if w!=None]#,instance.senses,instance.word) #233['千', '寻', '铁锁', '沉', '江底', '，', '一', '片', '降', None, '出', '石头', '。']
         if words[-1] not in ['。','？','！']:words.append('。') #For parser
-        print(instance.word,instance.senses,''.join(words),sep='\t') #Cut -f 3 > Chinese_test_pos.xml.utf8.segmented.
+        print(instance.word,instance.senses,' '.join(words),sep='\t') #Cut -f 3 > Chinese_test_pos.xml.utf8.segmented.
 
