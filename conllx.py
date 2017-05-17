@@ -36,6 +36,11 @@ def triples_to_DRH_dict(triples,d):#=read_conllx_triples(corpus_file='/tmp/autoc
         else:d[dep][rel].append(head)
     return d
 
+class DG(DependencyGraph):
+    def __init__(self,sent,top_relation_label):
+        DependencyGraph.__init__(self,sent,top_relation_label)
+#       self.words=[node['word'] for i,node in sorted(self.nodes.items()) if node['tag']!='TOP']
+
 from nltk.corpus.reader.dependency import DependencyCorpusReader
 class DCR(DependencyCorpusReader):  # Override DependencyGraph with top_relation_label='root' for conllx format.
     def parsed_sents(self,fileids=None):
