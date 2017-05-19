@@ -58,5 +58,13 @@ def grammatical_collocation(request):     #Form action=/grammatical_collocation
     if word not in HRD:HRD[word]={'rel':'dependent'}
     return render(request,'collocation.htm',{'word':word,'RH':DRH[word],'RD':HRD[word]})
 
+from senseval import SensevalCorpusReader
+from conllx import DCR
+from wsd import combine_sense_instance_with_parsed_sent,collocate_sense
+root='autocorpus3/static'
+train_instances=SensevalCorpusReader(root,'Chinese_train_pos.xml.utf8').instances()
+train_parsed_sents=DCR(root,'Chinese_train_pos.xml.utf8.segmented.conllu').parsed_sents()
+train=combine_sense_instance_with_parsed_sent(train_instances,train_parsed_sents)
 def sense_collocation(request):
-    pass
+    rsd=collocate_sense(train)
+    return render(request,'sense_collocation.htm',{'rsd':rsd,'senses':rsd.popitem()[1].keys()})

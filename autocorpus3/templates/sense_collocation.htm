@@ -1,0 +1,19 @@
+<table border=1px>
+<tr><th>rel</th>
+{% for sense in senses %}
+    <th>{{sense}}</th>
+{% endfor %}
+</tr>
+
+{% for rel,sense_deps in rsd.items %}
+<tr><td>{{rel}}</td>
+    {% for sense,deps in sense_deps.items %}
+    <td>
+        {% for dep in deps %}
+        {{dep}}
+        {% endfor %}
+    </td>
+    {% endfor %}
+</tr>
+{% endfor %}
+</table>

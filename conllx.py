@@ -38,14 +38,14 @@ def triples_to_DRH_dict(triples,d):#=read_conllx_triples(corpus_file='/tmp/autoc
 
 class DG(DependencyGraph):
     def __init__(self,sent,top_relation_label):
-        DependencyGraph.__init__(self,sent,top_relation_label)
-#       self.words=[node['word'] for i,node in sorted(self.nodes.items()) if node['tag']!='TOP']
+        DependencyGraph.__init__(self,sent,top_relation_label=top_relation_label)
+        self.words=[node['word'] for i,node in sorted(self.nodes.items()) if node['tag']!='TOP']
 
 from nltk.corpus.reader.dependency import DependencyCorpusReader
 class DCR(DependencyCorpusReader):  # Override DependencyGraph with top_relation_label='root' for conllx format.
     def parsed_sents(self,fileids=None):
         sents=concat([DependencyCorpusView(fileid, False, True, True, encoding=enc) for fileid, enc in self.abspaths(fileids, include_encoding=True)])
-        return [DependencyGraph(sent,top_relation_label='root') for sent in sents]
+        return [DG(sent,top_relation_label='root') for sent in sents]
 
 from sys import argv
 if __name__=='__main__':
@@ -57,5 +57,5 @@ if __name__=='__main__':
 #       for head,rel,dep in triples:print(head,rel,dep,end='\t')
         d=triples_to_HRD_dict(triples,d)
 #   print(d['她'])#,'_')])
-    for sent in dcr.sents():
-        print(' '.join(sent))
+    for dg in dcr.parsed_sents():
+        print(' '.join(dg.words))#' '.join(sent))
