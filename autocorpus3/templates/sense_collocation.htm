@@ -1,7 +1,7 @@
 <table border=1px>
-<tr><th>rel</th>
+<tr><td>rel</td>
 {% for sense in senses %}
-    <th>{{sense}}</th>
+    <td>{{sense}}</td>
 {% endfor %}
 </tr>
 
@@ -9,7 +9,7 @@
 <tr><td>{{rel}}</td>
     {% for sense,deps in sense_deps.items %}
     <td>
-        {% for dep in deps %}
+        {% for dep,sents in deps.items %}
         {{dep}}
         {% endfor %}
     </td>

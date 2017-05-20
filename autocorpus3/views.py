@@ -42,21 +42,29 @@ def parser(request):     #Form action=/parser
     parse(segmented_file=request.GET['segmented_corpus'])
     return redirect('/')
 
+
 from conllx import DCR,triples_to_HRD_dict,triples_to_DRH_dict
-#from collections import defaultdict
-def grammatical_collocation(request):     #Form action=/grammatical_collocation
-    word=request.GET['word']#.encode('utf8') for python2
-    corpus_file=request.GET['parsed_corpus']
-#   triples=read_conllx_triples('/tmp/autocorpus3/autocorpus3/static/'+corpus_file)
+def build_parsed_dict(fileids='Chinese_train_pos.xml.utf8.segmented.conllu'):
     DRH=dict();HRD=dict()
-    dcr=DCR(root='/tmp/autocorpus3/autocorpus3/static',fileids=[corpus_file])
+    dcr=DCR(root='/tmp/autocorpus3/autocorpus3/static',fileids=fileids)
     for parsed_sent in dcr.parsed_sents():
         triples=parsed_sent.triples()
         HRD=triples_to_HRD_dict(triples,HRD)
         DRH=triples_to_DRH_dict(triples,DRH)
+    return DRH,HRD
+
+def grammatical_collocation(request):     #Form action=/grammatical_collocation
+    word=request.GET['word']#.encode('utf8') for python2
+    corpus_file=request.GET['parsed_corpus']
+    DRH,HRD=build_parsed_dict(fileids=corpus_file)
     if word not in DRH:DRH[word]={'rel':'head'}
     if word not in HRD:HRD[word]={'rel':'dependent'}
     return render(request,'collocation.htm',{'word':word,'RH':DRH[word],'RD':HRD[word]})
+
+from django.http import HttpResponse
+DRH,HRD=build_parsed_dict()
+def api(request,word,rel,dep):
+    return HttpResponse(HRD[word][rel])#word+rel+dep)
 
 from senseval import SensevalCorpusReader
 from conllx import DCR

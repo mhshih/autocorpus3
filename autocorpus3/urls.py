@@ -21,6 +21,7 @@ urlpatterns = [
     url('segmenter',views.segmenter),
     url('parser',views.parser),
     url('grammatical_collocation',views.grammatical_collocation),
+    url('api/(?P<word>.+)/(?P<rel>.+)/(?P<dep>.+)',views.api),
     url('sense_collocation',views.sense_collocation),
     url('',views.home)
 ]

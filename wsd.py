@@ -71,7 +71,7 @@ def collocate_sense(train,target_word='吃'):#中医'#本'
         for sense,dep_sents in sds.items():
             print(sense,list(dep_sents.keys()),end='\t')
         print()
-    return rsds
+    return od#rsds
 
 
 from sys import argv
