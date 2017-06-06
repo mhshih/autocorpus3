@@ -44,9 +44,8 @@
 <fieldset>
     <legend>Query Sense Collocaion (from <a href=http://nlp.cs.swarthmore.edu/semeval>SemEval-2007</a> Chinese lexical sample)</legend>
     <form action=/sense_collocation>
-        {% for SensevalCorpusReader in SensevalCorpora %}
-        <input type=radio name=SensevalCorpus value={{SensevalCorpusReader.fileids.0}} /><a href=static/{{SensevalCorpusReader.fileids.0}}>{{SensevalCorpusReader.fileids.0}}</a> ({{SensevalCorpusReader.instances|length}} instances)<br>
-        {% endfor %}
+        {% csrf_token %}
+        {{ form.as_p }}<br>
         <input type=submit />
     </form>
 </fieldset>

@@ -10,6 +10,17 @@ class Corpus:
         self.words=len(f.split())
         self.sentences=len(f.strip().split('\n'))
 
+class CountryForm(forms.Form):
+        OPTIONS = (
+                ("AUT", "Austria"),
+                ("DEU", "Germany"),
+                ("NLD", "Neitherlands"),
+                )
+        Countries = forms.ChoiceField(widget=forms.Select,
+                                             choices=OPTIONS)
+
+form=CountryForm
+
 from conllx import DCR  # DependencyCorpusReader
 from senseval import SensevalCorpusReader
 
@@ -20,7 +31,7 @@ def home(request):      #Form action=/
     segmented_corpora=[Corpus(fn) for fn in sorted(listdir(static_path)) if fn.endswith('segmented')]
     parsed_corpora=[DCR(root=static_path,fileids=[fn]) for fn in sorted(listdir(static_path)) if fn.endswith('conllu')]
     SensevalCorpora=[SensevalCorpusReader(root=static_path,fileids=fn) for fn in sorted(listdir(static_path)) if fn.endswith('xml.utf8')]
-    return render(request,'template.htm',{'raw_corpora':raw_corpora,'segmented_corpora':segmented_corpora,'parsed_corpora':parsed_corpora,'SensevalCorpora':SensevalCorpora,'upload_form':UploadFileForm()})
+    return render(request,'template.htm',{'raw_corpora':raw_corpora,'segmented_corpora':segmented_corpora,'parsed_corpora':parsed_corpora,'SensevalCorpora':SensevalCorpora,'upload_form':UploadFileForm(),'form':form})
 
 from django.shortcuts import redirect
 def upload(request):    #Form action=/upload
@@ -74,5 +85,9 @@ train_instances=SensevalCorpusReader(root,'Chinese_train_pos.xml.utf8').instance
 train_parsed_sents=DCR(root,'Chinese_train_pos.xml.utf8.segmented.conllu').parsed_sents()
 train=combine_sense_instance_with_parsed_sent(train_instances,train_parsed_sents)
 def sense_collocation(request):
+    form=CountryForm(request.GET)
+    if form.is_valid():
+        countries=form.cleaned_data.get('Countries')
+    return HttpResponse(countries)
     rsd=collocate_sense(train)
     return render(request,'sense_collocation.htm',{'rsd':rsd,'senses':rsd.popitem()[1].keys()})
